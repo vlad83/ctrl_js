@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    .slider:hover {opacity: 1;}
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #4CAF50;
+        cursor: pointer;
+    }
+
+    #slider_R::-webkit-slider-thumb {background: red;}
+    #slider_R::-moz-range-thumb {background: red;}
+    #slider_G::-webkit-slider-thumb {background: green;}
+    #slider_G::-moz-range-thumb {background: green;}
+    #slider_B::-webkit-slider-thumb {background: blue;}
+    #slider_B::-moz-range-thumb {background: blue;}
+
+    .TableRow
+    {
+        display : table;
+        width : 100%;
+        margin : 1%;
+        padding : 1%;
+    }
+    .TableColumn
+    {
+        display : table-cell;
+        vertical-align: middle;
+        padding : 1%;
+    }
+</style>
+
+<body>
+<div>
+    <h1>RGB</h1>
+    <div class = "TableRow">
+        <div class = "TableColumn">
+            <p><input type="range" min="0" max="255" value="0" class="slider" id="slider_R"></p>
+            <p><input type="range" min="0" max="255" value="0" class="slider" id="slider_G"></p>
+            <p><input type="range" min="0" max="255" value="0" class="slider" id="slider_B"></p>
+        </div>
+        <div class = "TableColumn">
+            <canvas id="rgb_canvas" width="100" height="100" style="border:1px solid rgb(0,0,0)"></canvas>
+        </div>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+    var socket = io();
+    var valueR = 0;
+    var valueG = 0;
+    var valueB = 0;
+
+    function updateCanvas(r, g, b)
+    {
+        var canvas = document.getElementById("rgb_canvas");
+        canvas.getContext('2d').fillStyle = 'rgb(' + r + ', ' + g + ', ' + b +')';
+        canvas.getContext('2d').fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function emitRGBUpdate(r, g, b)
+    {
+
+        socket.emit(
+            "UpdateRGB",
+            {
+                "id" : "garden_lamp0",
+                "mode" : "solid",
+                "R" : r,
+                "G" : g,
+                "B" : b
+            });
+    }
+
+    window.addEventListener(
+        "load",
+        function()
+        {
+            var rSlider = document.getElementById("slider_R");
+            var gSlider = document.getElementById("slider_G");
+            var bSlider = document.getElementById("slider_B");
+
+            updateCanvas(255, 255, 255);
+
+            rSlider.addEventListener(
+                "change",
+                function()
+                {
+                    valueR = this.valueAsNumber;
+                    updateCanvas(valueR, valueG, valueB);
+                    emitRGBUpdate(valueR, valueG, valueB);
+                });
+
+            gSlider.addEventListener(
+                "change",
+                function()
+                {
+                    valueG = this.valueAsNumber;
+                    updateCanvas(valueR, valueG, valueB);
+                    emitRGBUpdate(valueR, valueG, valueB);
+                });
+
+            bSlider.addEventListener(
+                "change",
+                function()
+                {
+                    valueB = this.valueAsNumber;
+                    updateCanvas(valueR, valueG, valueB);
+                    emitRGBUpdate(valueR, valueG, valueB);
+                });
+        });
+</script>
+</body>
+</html>
