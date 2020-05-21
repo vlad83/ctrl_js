@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    .Table
+    {
+        display : table;
+        margin : 1%;
+        padding : 1%;
+        width : 400px;
+    }
+
+    .TableRow
+    {
+        display : table-row;
+        width : 100%;
+    }
+
+    .TableCell
+    {
+        display : table-cell;
+        vertical-align: middle;
+        width: : 100%;
+    }
+
+    .Icon
+    {
+        border-color: black;
+        border-style: solid;
+        display: inline-block;
+        margin : 1%;
+        padding : 1%;
+        max-width : 80%;
+    }
+
+    .Slider
+    {
+        width: 100%;
+    }
+</style>
+
+<body>
+    <div>
+        <div class = "Table">
+            <div class = "TableRow">
+
+                <div class = "TableCell">
+                    <div class ="Icon" id = "iconA">
+                        <img src = "icon/svg/bulb.svg">
+                        A
+                    </div>
+                </div>
+
+                <div class = "TableCell">
+                    <div class ="Icon" id = "iconB">
+                        <img src = "icon/svg/bulb.svg">
+                        B
+                    </div>
+                </div>
+
+                <div class = "TableCell">
+                    <div class ="Icon" id = "iconC">
+                        <img src = "icon/svg/bulb.svg">
+                        C
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div id = "rgbSelector" style = "display : none">
+        <div class = "Table">
+            <div class = "TableRow">
+                <div class = "TableCell">
+                    <p>R</p>
+                    <p>G</p>
+                    <p>B</p>
+                </div>
+                <div class = "TableCell">
+                    <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderR"></p>
+                    <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderG"></p>
+                    <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderB"></p>
+                </div>
+                <div class = "TableCell">
+                    <canvas id="rgb_canvas" width=100% style="border:1px solid rgb(0,0,0)"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="lib/socket.io.js"></script>
+
+<script>
+    var data =
+    [
+        {
+            "name" : "A",
+            "R" : 0, "G" : 0, "B" : 0
+        },
+        {
+            "name" : "B",
+            "R" : 0, "G" : 0, "B" : 0
+        },
+        {
+            "name" : "C",
+            "R" : 0, "G" : 0, "B" : 0
+        }
+    ];
+
+    /* whenever Icon is clicked dataIdx is set to valid index into data array */
+    var dataIdx = -1;
+
+    function hideOtherIcons(idx)
+    {
+        for(var i = 0; i < data.length; ++i)
+        {
+            if(idx != i)
+            {
+                var otherIcon = document.getElementById("icon" + data[i].name);
+                otherIcon.style.display = "none";
+            }
+        }
+    }
+
+    function showOtherIcons(idx)
+    {
+        for(var i = 0; i < data.length; ++i)
+        {
+            if(idx != i)
+            {
+                var otherIcon = document.getElementById("icon" + data[i].name);
+                otherIcon.style.display = "inline-block";
+            }
+        }
+    }
+
+    function registerIconOnClick(idx)
+    {
+        var icon = document.getElementById("icon" + data[idx].name);
+
+        icon.style.cursor == 'pointer';
+        icon.onclick =
+        function()
+        {
+            var rgbSelector = document.getElementById('rgbSelector');
+
+            if("none" === rgbSelector.style.display)
+            {
+                rgbSelector.style.display = "block";
+                hideOtherIcons(idx);
+                updateCanvas(idx);
+                updateSliders(idx);
+                dataIdx =  idx;
+            }
+            else
+            {
+                rgbSelector.style.display = "none";
+                showOtherIcons(idx);
+                dataIdx = -1;
+            }
+        }
+    }
+
+    function updateCanvas(idx)
+    {
+        var canvas = document.getElementById("rgb_canvas");
+        canvas.getContext('2d').fillStyle = 'rgb(' + data[idx].R + ', ' + data[idx].G + ', ' + data[idx].B +')';
+        canvas.getContext('2d').fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function updateSliders(idx)
+    {
+        var rSlider = document.getElementById("sliderR");
+        var gSlider = document.getElementById("sliderG");
+        var bSlider = document.getElementById("sliderB");
+
+        rSlider.valueAsNumber = data[idx].R;
+        gSlider.valueAsNumber = data[idx].G;
+        bSlider.valueAsNumber = data[idx].B;
+    }
+
+    function emitLampUpdate(idx)
+    {
+        var socket_io = io("http://localhost:8090");
+
+        socket_io.emit(
+            "UpdateLamp",
+            {
+                "id" : data[idx].name,
+                "mode" : "solid",
+                "R" : data[idx].R,
+                "G" : data[idx].G,
+                "B" : data[idx].B
+            });
+    }
+
+    window.addEventListener(
+        "load",
+        function()
+        {
+            for(var i = 0; i < data.length; ++i)
+            {
+                registerIconOnClick(i);
+            }
+
+            var rSlider = document.getElementById("sliderR");
+            var gSlider = document.getElementById("sliderG");
+            var bSlider = document.getElementById("sliderB");
+
+            rSlider.addEventListener(
+                "change",
+                function()
+                {
+                    data[dataIdx].R = this.valueAsNumber;
+                    updateCanvas(dataIdx);
+                    emitLampUpdate(dataIdx);
+                });
+
+            gSlider.addEventListener(
+                "change",
+                function()
+                {
+                    data[dataIdx].G = this.valueAsNumber;
+                    updateCanvas(dataIdx);
+                    emitLampUpdate(dataIdx);
+                });
+
+            bSlider.addEventListener(
+                "change",
+                function()
+                {
+                    data[dataIdx].B = this.valueAsNumber;
+                    updateCanvas(dataIdx);
+                    emitLampUpdate(dataIdx);
+                });
+        });
+</script>
+</body>
+</html>
