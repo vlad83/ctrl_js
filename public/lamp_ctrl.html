@@ -68,59 +68,72 @@
 
             </div>
         </div>
-
     </div>
 
-    <div id = "rgbSelector" style = "display : none">
-        <div class = "Table">
-            <div class = "TableRow">
-                <div class = "TableCell">
-                    <p>R</p>
-                    <p>G</p>
-                    <p>B</p>
-                </div>
-                <div class = "TableCell">
-                    <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderR"></p>
-                    <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderG"></p>
-                    <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderB"></p>
-                </div>
-                <div class = "TableCell">
-                    <canvas id="rgb_canvas" width=100% style="border:1px solid rgb(0,0,0)"></canvas>
+
+    <div id="mode_selector_container" style = "display : none">
+
+        <select id="mode_selector">
+            <option value="" selected disabled hidden>Choose mode</option>
+            <option value="off">OFF</option>
+            <option value="solid_rgb">solid RGB</option>
+            <option value="fx_fire">fire</option>
+        </select>
+
+        <div id = "rgb_selector_container" style = "display : none">
+            <div class = "Table">
+                <div class = "TableRow">
+                    <div class = "TableCell">
+                        <p>R</p>
+                        <p>G</p>
+                        <p>B</p>
+                    </div>
+                    <div class = "TableCell">
+                        <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderR"></p>
+                        <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderG"></p>
+                        <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderB"></p>
+                    </div>
+                    <div class = "TableCell">
+                        <canvas id="rgb_canvas" width=100% style="border:1px solid rgb(0,0,0)"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    </div>
 
 <script src="lib/socket.io.js"></script>
 
 <script>
-    var data =
+    let data =
     [
         {
             "name" : "A",
+            "mode" : "",
             "R" : 0, "G" : 0, "B" : 0
         },
         {
             "name" : "B",
+            "mode" : "",
             "R" : 0, "G" : 0, "B" : 0
         },
         {
             "name" : "C",
+            "mode" : "",
             "R" : 0, "G" : 0, "B" : 0
         }
     ];
 
     /* whenever Icon is clicked dataIdx is set to valid index into data array */
-    var dataIdx = -1;
+    let dataIdx = -1;
 
     function hideOtherIcons(idx)
     {
-        for(var i = 0; i < data.length; ++i)
+        for(let i = 0; i < data.length; ++i)
         {
             if(idx != i)
             {
-                var otherIcon = document.getElementById("icon" + data[i].name);
+                let otherIcon = document.getElementById("icon" + data[i].name);
                 otherIcon.style.display = "none";
             }
         }
@@ -128,64 +141,93 @@
 
     function showOtherIcons(idx)
     {
-        for(var i = 0; i < data.length; ++i)
+        for(let i = 0; i < data.length; ++i)
         {
             if(idx != i)
             {
-                var otherIcon = document.getElementById("icon" + data[i].name);
+                let otherIcon = document.getElementById("icon" + data[i].name);
                 otherIcon.style.display = "inline-block";
             }
         }
     }
 
-    function registerIconOnClick(idx)
+    function registerIconOnClick()
     {
-        var icon = document.getElementById("icon" + data[idx].name);
-
-        icon.style.cursor == 'pointer';
-        icon.onclick =
-        function()
+        for(let i = 0; i < data.length; ++i)
         {
-            var rgbSelector = document.getElementById('rgbSelector');
+            let icon = document.getElementById("icon" + data[i].name);
 
-            if("none" === rgbSelector.style.display)
-            {
-                rgbSelector.style.display = "block";
-                hideOtherIcons(idx);
-                updateCanvas(idx);
-                updateSliders(idx);
-                dataIdx =  idx;
-            }
-            else
-            {
-                rgbSelector.style.display = "none";
-                showOtherIcons(idx);
-                dataIdx = -1;
-            }
+            icon.dataIdx = i;
+            icon.onclick =
+                function()
+                {
+                    let container = document.getElementById('mode_selector_container');
+
+                    if("none" === container.style.display)
+                    {
+                        dataIdx =  this.dataIdx;
+                        hideOtherIcons(this.dataIdx);
+                        updateModeSelector(this.dataIdx);
+                        container.style.display = "block";
+                    }
+                    else
+                    {
+                        container.style.display = "none";
+                        showOtherIcons(this.dataIdx);
+                        dataIdx = -1;
+                    }
+                }
         }
     }
 
     function updateCanvas(idx)
     {
-        var canvas = document.getElementById("rgb_canvas");
+        let canvas = document.getElementById("rgb_canvas");
         canvas.getContext('2d').fillStyle = 'rgb(' + data[idx].R + ', ' + data[idx].G + ', ' + data[idx].B +')';
         canvas.getContext('2d').fillRect(0, 0, canvas.width, canvas.height);
     }
 
     function updateSliders(idx)
     {
-        var rSlider = document.getElementById("sliderR");
-        var gSlider = document.getElementById("sliderG");
-        var bSlider = document.getElementById("sliderB");
+        let rSlider = document.getElementById("sliderR");
+        let gSlider = document.getElementById("sliderG");
+        let bSlider = document.getElementById("sliderB");
 
         rSlider.valueAsNumber = data[idx].R;
         gSlider.valueAsNumber = data[idx].G;
         bSlider.valueAsNumber = data[idx].B;
     }
 
+    function updateModeSelector(idx)
+    {
+        let selector = document.getElementById("mode_selector");
+
+        if(selector.value !== data[idx].mode)
+        {
+            selector.value = data[idx].mode;
+        }
+
+        /* solid_rgb */
+        {
+            let container = document.getElementById('rgb_selector_container');
+
+
+            if("solid_rgb" === data[idx].mode)
+            {
+                container.style.display = "block";
+                updateCanvas(idx);
+                updateSliders(idx);
+            }
+            else
+            {
+                container.style.display = "none";
+            }
+        }
+    }
+
     function emitLampUpdate(idx)
     {
-        var socket_io = io("http://localhost:8090");
+        let socket_io = io("http://localhost:8090");
 
         socket_io.emit(
             "UpdateLamp",
@@ -198,45 +240,59 @@
             });
     }
 
+    function registerSlidersOnChange()
+    {
+        let rSlider = document.getElementById("sliderR");
+        let gSlider = document.getElementById("sliderG");
+        let bSlider = document.getElementById("sliderB");
+
+        rSlider.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].R = this.valueAsNumber;
+                updateCanvas(dataIdx);
+                emitLampUpdate(dataIdx);
+            });
+
+        gSlider.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].G = this.valueAsNumber;
+                updateCanvas(dataIdx);
+                emitLampUpdate(dataIdx);
+            });
+
+        bSlider.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].B = this.valueAsNumber;
+                updateCanvas(dataIdx);
+                emitLampUpdate(dataIdx);
+            });
+    }
+
+    function registerModeSelectorOnChange()
+    {
+        let modeSelector = document.getElementById("mode_selector");
+
+        modeSelector.onchange =
+            function()
+            {
+                data[dataIdx].mode = this.value;
+                updateModeSelector(dataIdx);
+            };
+    }
+
     window.addEventListener(
         "load",
         function()
         {
-            for(var i = 0; i < data.length; ++i)
-            {
-                registerIconOnClick(i);
-            }
-
-            var rSlider = document.getElementById("sliderR");
-            var gSlider = document.getElementById("sliderG");
-            var bSlider = document.getElementById("sliderB");
-
-            rSlider.addEventListener(
-                "change",
-                function()
-                {
-                    data[dataIdx].R = this.valueAsNumber;
-                    updateCanvas(dataIdx);
-                    emitLampUpdate(dataIdx);
-                });
-
-            gSlider.addEventListener(
-                "change",
-                function()
-                {
-                    data[dataIdx].G = this.valueAsNumber;
-                    updateCanvas(dataIdx);
-                    emitLampUpdate(dataIdx);
-                });
-
-            bSlider.addEventListener(
-                "change",
-                function()
-                {
-                    data[dataIdx].B = this.valueAsNumber;
-                    updateCanvas(dataIdx);
-                    emitLampUpdate(dataIdx);
-                });
+            registerIconOnClick();
+            registerModeSelectorOnChange();
+            registerSlidersOnChange();
         });
 </script>
 </body>
