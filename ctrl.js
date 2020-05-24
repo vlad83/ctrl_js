@@ -13,7 +13,7 @@ async function updateDevice(data)
      *     "payload" : [] - array of data
      * }
      * */
-        zmq_socket = new zmq.Request
+        let zmq_socket = new zmq.Request
         zmq_socket.connect(BROKER_ENDPOINT);
 
         console.log(
@@ -37,23 +37,31 @@ async function updateDevice(data)
             reply.toString());
 }
 
-async function dispatchUpdateLamp(id, mode, r, g, b)
+async function dispatchUpdateLamp(request)
 {
-    console.log("dispatchUpdateLamp", id, mode, r, g, b);
+    console.log(
+        arguments.callee.name,
+        request);
 
-    zmq_socket = new zmq.Request
+    let zmq_socket = new zmq.Request
     zmq_socket.connect(BROKER_ENDPOINT);
+
+    let payload =
+        {
+            "id" : request.id,
+            "mode" : request.mode,
+        };
+
+    if("solid_rgb" === request.mode)
+    {
+        payload.RGB = [request.R, request.G, request.B];
+    }
 
     await zmq_socket.send(
         [
             "MDPC01", /* MDP client signature */
             "rgb", /* service name */
-            JSON.stringify(
-                {
-                    "id" : id,
-                    "mode" : mode,
-                    "RGB" : [r, g, b]
-                })
+            JSON.stringify(payload)
         ]);
 
     [signature, service, reply] = await zmq_socket.receive();
@@ -80,7 +88,7 @@ socket_io.on(
             'UpdateLamp',
             function(data)
             {
-                dispatchUpdateLamp(data.id, data.mode, data.R, data.G, data.B);
+                dispatchUpdateLamp(data);
             });
     });
 

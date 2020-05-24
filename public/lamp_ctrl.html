@@ -229,15 +229,21 @@
     {
         let socket_io = io("http://localhost:8090");
 
-        socket_io.emit(
-            "UpdateLamp",
+        let request =
             {
                 "id" : data[idx].name,
-                "mode" : "solid",
-                "R" : data[idx].R,
-                "G" : data[idx].G,
-                "B" : data[idx].B
-            });
+                "mode" : data[idx].mode,
+            };
+
+        if("solid_rgb" == data[idx].mode)
+        {
+            request.R = data[idx].R;
+            request.G = data[idx].G;
+            request.B = data[idx].B;
+
+        }
+
+        socket_io.emit("UpdateLamp", request);
     }
 
     function registerSlidersOnChange()
@@ -283,6 +289,7 @@
             {
                 data[dataIdx].mode = this.value;
                 updateModeSelector(dataIdx);
+                emitLampUpdate(dataIdx);
             };
     }
 
