@@ -1,0 +1,30 @@
+.Table
+{
+    display : table;
+    margin : 1%;
+    padding : 1%;
+    width : 400px;
+}
+
+.TableRow
+{
+    display : table-row;
+    width : 100%;
+}
+
+.TableCell
+{
+    display : table-cell;
+    vertical-align: middle;
+    width: : 100%;
+}
+
+.Icon
+{
+    border-color: black;
+    border-style: solid;
+    display: inline-block;
+    margin : 1%;
+    padding : 1%;
+    width : 80%;
+}
