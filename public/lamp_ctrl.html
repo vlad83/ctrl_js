@@ -46,21 +46,35 @@
             <option value="fx_torch">torch</option>
         </select>
 
-        <div id = "rgb_selector_container" style = "display : none">
+        <div id = "mode_container" style = "display : none">
+
             <div class = "Table">
                 <div class = "TableRow">
-                    <div class = "TableCell">
-                        <p>R</p>
-                        <p>G</p>
-                        <p>B</p>
-                    </div>
-                    <div class = "TableCell">
-                        <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderR"></p>
-                        <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderG"></p>
-                        <p><input type="range" min="0" max="255" value="0" class="Slider" id="sliderB"></p>
-                    </div>
-                    <div class = "TableCell">
-                        <canvas id="rgb_canvas" width=100% style="border:1px solid rgb(0,0,0)"></canvas>
+                        <div class = "TableCell">
+                            <p>BRIGHTNESS</p>
+                        </div>
+                        <div class = "TableCell">
+                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="brightness_slider"></p>
+                        </div>
+                </div>
+            </div>
+
+            <div id = "rgb_selector_container" style = "display : none">
+                <div class = "Table">
+                    <div class = "TableRow">
+                        <div class = "TableCell">
+                            <p>R</p>
+                            <p>G</p>
+                            <p>B</p>
+                        </div>
+                        <div class = "TableCell">
+                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="slider_r"></p>
+                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="slider_g"></p>
+                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="slider_b"></p>
+                        </div>
+                        <div class = "TableCell">
+                            <canvas id="rgb_canvas" width=100% style="border:1px solid rgb(0,0,0)"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -71,21 +85,25 @@
 <script src="lib/socket.io.js"></script>
 
 <script>
+    const SOCKET_IO_ENDPOINT = "http://localhost:8090";
     let data =
     [
         {
             "name" : "A",
             "mode" : "",
+            "brightness" : 255,
             "R" : 0, "G" : 0, "B" : 0
         },
         {
             "name" : "B",
             "mode" : "",
+            "brightness" : 255,
             "R" : 0, "G" : 0, "B" : 0
         },
         {
             "name" : "C",
             "mode" : "",
+            "brightness" : 255,
             "R" : 0, "G" : 0, "B" : 0
         }
     ];
@@ -127,7 +145,7 @@
             icon.onclick =
                 function()
                 {
-                    let container = document.getElementById('mode_selector_container');
+                    let container = document.getElementById("mode_selector_container");
 
                     if("none" === container.style.display)
                     {
@@ -149,15 +167,15 @@
     function updateCanvas(idx)
     {
         let canvas = document.getElementById("rgb_canvas");
-        canvas.getContext('2d').fillStyle = 'rgb(' + data[idx].R + ', ' + data[idx].G + ', ' + data[idx].B +')';
-        canvas.getContext('2d').fillRect(0, 0, canvas.width, canvas.height);
+        canvas.getContext("2d").fillStyle = "rgb(" + data[idx].R + ", " + data[idx].G + ", " + data[idx].B +")";
+        canvas.getContext("2d").fillRect(0, 0, canvas.width, canvas.height);
     }
 
     function updateSliders(idx)
     {
-        let rSlider = document.getElementById("sliderR");
-        let gSlider = document.getElementById("sliderG");
-        let bSlider = document.getElementById("sliderB");
+        let rSlider = document.getElementById("slider_r");
+        let gSlider = document.getElementById("slider_g");
+        let bSlider = document.getElementById("slider_b");
 
         rSlider.valueAsNumber = data[idx].R;
         gSlider.valueAsNumber = data[idx].G;
@@ -173,9 +191,28 @@
             selector.value = data[idx].mode;
         }
 
+        /* brightness */
+        {
+            let container = document.getElementById("mode_container");
+            let brightnessSlider = document.getElementById("brightness_slider");
+
+            if(
+                "solid_rgb" === data[idx].mode
+                || "fx_fire" == data[idx].mode
+                || "fx_torch" == data[idx].mode)
+            {
+                brightnessSlider.valueAsNumber = data[idx].brightness;
+                container.style.display = "block";
+            }
+            else
+            {
+                container.style.display = "none";
+            }
+        }
+
         /* solid_rgb */
         {
-            let container = document.getElementById('rgb_selector_container');
+            let container = document.getElementById("rgb_selector_container");
 
 
             if("solid_rgb" === data[idx].mode)
@@ -193,20 +230,18 @@
 
     function emitLampUpdate(idx)
     {
-        let socket_io = io("http://localhost:8090");
+        let socket_io = io(SOCKET_IO_ENDPOINT);
 
         let request =
             {
                 "id" : data[idx].name,
                 "mode" : data[idx].mode,
+                "brightness" : data[idx].brightness
             };
 
         if("solid_rgb" == data[idx].mode)
         {
-            request.R = data[idx].R;
-            request.G = data[idx].G;
-            request.B = data[idx].B;
-
+            request.RGB = [data[idx].R, data[idx].G, data[idx].B];
         }
 
         socket_io.emit("UpdateLamp", request);
@@ -214,9 +249,10 @@
 
     function registerSlidersOnChange()
     {
-        let rSlider = document.getElementById("sliderR");
-        let gSlider = document.getElementById("sliderG");
-        let bSlider = document.getElementById("sliderB");
+        let rSlider = document.getElementById("slider_r");
+        let gSlider = document.getElementById("slider_g");
+        let bSlider = document.getElementById("slider_b");
+        let brightnessSlider = document.getElementById("brightness_slider");
 
         rSlider.addEventListener(
             "change",
@@ -242,6 +278,14 @@
             {
                 data[dataIdx].B = this.valueAsNumber;
                 updateCanvas(dataIdx);
+                emitLampUpdate(dataIdx);
+            });
+        brightnessSlider.addEventListener(
+            "change",
+            function()
+            {
+                console.log("BRIGHTNESS", this.valueAsNumber);
+                data[dataIdx].brightness = this.valueAsNumber;
                 emitLampUpdate(dataIdx);
             });
     }

@@ -71,16 +71,7 @@ async function dispatchUpdateLamp(request)
 
     zmq_socket.connect(BROKER_ENDPOINT);
 
-    let payload =
-        {
-            "id" : request.id,
-            "mode" : request.mode,
-        };
-
-    if("solid_rgb" === request.mode)
-    {
-        payload.RGB = [request.R, request.G, request.B];
-    }
+    let payload = request;
 
     try
     {
