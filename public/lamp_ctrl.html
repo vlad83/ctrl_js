@@ -57,6 +57,14 @@
                             <p><input type="range" min="0" max="255" value="0" class="Slider" id="brightness_slider"></p>
                         </div>
                 </div>
+                <div class = "TableRow">
+                        <div class = "TableCell">
+                            <p>REFRESH RATE</p>
+                        </div>
+                        <div class = "TableCell">
+                            <p><input type="range" min="4" max="240" value="0" class="Slider" id="fps_slider"></p>
+                        </div>
+                </div>
             </div>
 
             <div id = "rgb_selector_container" style = "display : none">
@@ -92,18 +100,21 @@
             "name" : "A",
             "mode" : "",
             "brightness" : 255,
+            "fps" : 33,
             "R" : 0, "G" : 0, "B" : 0
         },
         {
             "name" : "B",
             "mode" : "",
             "brightness" : 255,
+            "fps" : 33,
             "R" : 0, "G" : 0, "B" : 0
         },
         {
             "name" : "C",
             "mode" : "",
             "brightness" : 255,
+            "fps" : 33,
             "R" : 0, "G" : 0, "B" : 0
         }
     ];
@@ -195,6 +206,7 @@
         {
             let container = document.getElementById("mode_container");
             let brightnessSlider = document.getElementById("brightness_slider");
+            let fpsSlider = document.getElementById("fps_slider");
 
             if(
                 "solid_rgb" === data[idx].mode
@@ -202,6 +214,7 @@
                 || "fx_torch" == data[idx].mode)
             {
                 brightnessSlider.valueAsNumber = data[idx].brightness;
+                fpsSlider.valueAsNumber = data[idx].fps;
                 container.style.display = "block";
             }
             else
@@ -236,7 +249,8 @@
             {
                 "id" : data[idx].name,
                 "mode" : data[idx].mode,
-                "brightness" : data[idx].brightness
+                "brightness" : data[idx].brightness,
+                "fps" : data[idx].fps
             };
 
         if("solid_rgb" == data[idx].mode)
@@ -253,6 +267,7 @@
         let gSlider = document.getElementById("slider_g");
         let bSlider = document.getElementById("slider_b");
         let brightnessSlider = document.getElementById("brightness_slider");
+        let fpsSlider = document.getElementById("fps_slider");
 
         rSlider.addEventListener(
             "change",
@@ -284,8 +299,14 @@
             "change",
             function()
             {
-                console.log("BRIGHTNESS", this.valueAsNumber);
                 data[dataIdx].brightness = this.valueAsNumber;
+                emitLampUpdate(dataIdx);
+            });
+        fpsSlider.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].fps = this.valueAsNumber;
                 emitLampUpdate(dataIdx);
             });
     }
