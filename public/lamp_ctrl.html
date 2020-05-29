@@ -65,6 +65,14 @@
                             <p><input type="range" min="4" max="240" value="0" class="Slider" id="fps_slider"></p>
                         </div>
                 </div>
+                <div class = "TableRow">
+                        <div class = "TableCell">
+                            <p>SPARK THRESHOLD</p>
+                        </div>
+                        <div class = "TableCell">
+                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="torch_spark_threshold_slider"></p>
+                        </div>
+                </div>
             </div>
 
             <div id = "rgb_selector_container" style = "display : none">
@@ -101,6 +109,7 @@
             "mode" : "",
             "brightness" : 255,
             "fps" : 33,
+            "torch_spark_threshold" : 4,
             "R" : 0, "G" : 0, "B" : 0
         },
         {
@@ -108,6 +117,7 @@
             "mode" : "",
             "brightness" : 255,
             "fps" : 33,
+            "torch_spark_threshold" : 4,
             "R" : 0, "G" : 0, "B" : 0
         },
         {
@@ -115,6 +125,7 @@
             "mode" : "",
             "brightness" : 255,
             "fps" : 33,
+            "torch_spark_threshold" : 4,
             "R" : 0, "G" : 0, "B" : 0
         }
     ];
@@ -207,6 +218,7 @@
             let container = document.getElementById("mode_container");
             let brightnessSlider = document.getElementById("brightness_slider");
             let fpsSlider = document.getElementById("fps_slider");
+            let sparkThreshold = document.getElementById("torch_spark_threshold_slider");
 
             if(
                 "solid_rgb" === data[idx].mode
@@ -215,6 +227,7 @@
             {
                 brightnessSlider.valueAsNumber = data[idx].brightness;
                 fpsSlider.valueAsNumber = data[idx].fps;
+                sparkThreshold.valueAsNumber = data[idx].torch_spark_threshold;
                 container.style.display = "block";
             }
             else
@@ -253,9 +266,13 @@
                 "fps" : data[idx].fps
             };
 
-        if("solid_rgb" == data[idx].mode)
+        if("solid_rgb" === data[idx].mode)
         {
             request.RGB = [data[idx].R, data[idx].G, data[idx].B];
+        }
+        else if("fx_torch" === data[idx].mode)
+        {
+            request.torch_spark_threshold = data[idx].torch_spark_threshold;
         }
 
         socket_io.emit("UpdateLamp", request);
@@ -268,6 +285,7 @@
         let bSlider = document.getElementById("slider_b");
         let brightnessSlider = document.getElementById("brightness_slider");
         let fpsSlider = document.getElementById("fps_slider");
+        let sparkThreshold = document.getElementById("torch_spark_threshold_slider");
 
         rSlider.addEventListener(
             "change",
@@ -307,6 +325,13 @@
             function()
             {
                 data[dataIdx].fps = this.valueAsNumber;
+                emitLampUpdate(dataIdx);
+            });
+        sparkThreshold.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].torch_spark_threshold = this.valueAsNumber;
                 emitLampUpdate(dataIdx);
             });
     }
