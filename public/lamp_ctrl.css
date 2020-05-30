@@ -15,7 +15,7 @@
 .TableCell
 {
     display : table-cell;
-    vertical-align: middle; width: : 100%;
+    width: : 100%;
 }
 
 .Icon
@@ -26,9 +26,4 @@
     margin : 1%;
     padding : 1%;
     max-width : 80%;
-}
-
-.Slider
-{
-    width: 100%;
 }

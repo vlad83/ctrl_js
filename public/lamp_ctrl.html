@@ -54,24 +54,70 @@
                             <p>BRIGHTNESS</p>
                         </div>
                         <div class = "TableCell">
-                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="brightness_slider"></p>
+                            <p><input type="range" min="0" max="255" value="0" id="brightness_slider"></p>
+                        </div>
+                        <div class = "TableCell">
+                            <p id = "brightness_lookup" style = "text-align: right"></p>
                         </div>
                 </div>
                 <div class = "TableRow">
-                        <div class = "TableCell">
-                            <p>REFRESH RATE</p>
+                    <div class = "TableCell">
+                        <p>REFRESH RATE</p>
                         </div>
                         <div class = "TableCell">
-                            <p><input type="range" min="4" max="240" value="0" class="Slider" id="fps_slider"></p>
+                            <p><input type="range" min="4" max="240" value="0" id="fps_slider"></p>
+                        </div>
+                        <div class = "TableCell">
+                            <p id = "fps_lookup" style = "text-align: right"></p>
                         </div>
                 </div>
-                <div class = "TableRow">
+            </div>
+            <div class = "Table">
+                <div id="torch_selector_container" style = "display : none">
+                    <div class = "TableRow">
                         <div class = "TableCell">
                             <p>SPARK THRESHOLD</p>
                         </div>
                         <div class = "TableCell">
-                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="torch_spark_threshold_slider"></p>
+                            <p><input type="range" min="0" max="32" value="0" id="torch_spark_threshold_slider"></p>
                         </div>
+                        <div class = "TableCell">
+                            <p id = "torch_spark_threshold_lookup" style = "text-align: right"></p>
+                        </div>
+                    </div>
+                    <div class = "TableRow">
+                        <div class = "TableCell">
+                            <p>PASSIVE RETENTION</p>
+                        </div>
+                        <div class = "TableCell">
+                            <p><input type="range" min="0" max="180" value="0" id="torch_passive_retention_slider"></p>
+                        </div>
+                        <div class = "TableCell">
+                            <p id = "torch_passive_retention_lookup" style = "text-align: right"></p>
+                        </div>
+                    </div>
+                    <div class = "TableRow">
+                        <div class = "TableCell">
+                            <p>H ADJ LEAKAGE</p>
+                        </div>
+                        <div class = "TableCell">
+                            <p><input type="range" min="0" max="100" value="0" id="torch_adj_h_slider"></p>
+                        </div>
+                        <div class = "TableCell">
+                            <p id = "torch_adj_h_lookup" style = "text-align: right"></p>
+                        </div>
+                    </div>
+                    <div class = "TableRow">
+                        <div class = "TableCell">
+                            <p>V ADJ LEAKAGE</p>
+                        </div>
+                        <div class = "TableCell">
+                            <p><input type="range" min="0" max="100" value="0" id="torch_adj_v_slider"></p>
+                        </div>
+                        <div class = "TableCell">
+                            <p id = "torch_adj_v_lookup" style = "text-align: right"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -84,9 +130,9 @@
                             <p>B</p>
                         </div>
                         <div class = "TableCell">
-                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="slider_r"></p>
-                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="slider_g"></p>
-                            <p><input type="range" min="0" max="255" value="0" class="Slider" id="slider_b"></p>
+                            <p><input type="range" min="0" max="255" value="0" id="slider_r"></p>
+                            <p><input type="range" min="0" max="255" value="0" id="slider_g"></p>
+                            <p><input type="range" min="0" max="255" value="0" id="slider_b"></p>
                         </div>
                         <div class = "TableCell">
                             <canvas id="rgb_canvas" width=100% style="border:1px solid rgb(0,0,0)"></canvas>
@@ -108,24 +154,33 @@
             "name" : "A",
             "mode" : "",
             "brightness" : 255,
-            "fps" : 33,
+            "fps" : 60,
             "torch_spark_threshold" : 4,
+            "torch_passive_retention" : 120,
+            "torch_adj_h" : 35,
+            "torch_adj_v" : 40,
             "R" : 0, "G" : 0, "B" : 0
         },
         {
             "name" : "B",
             "mode" : "",
             "brightness" : 255,
-            "fps" : 33,
+            "fps" : 60,
             "torch_spark_threshold" : 4,
+            "torch_passive_retention" : 120,
+            "torch_adj_h" : 35,
+            "torch_adj_v" : 40,
             "R" : 0, "G" : 0, "B" : 0
         },
         {
             "name" : "C",
             "mode" : "",
             "brightness" : 255,
-            "fps" : 33,
+            "fps" : 60,
             "torch_spark_threshold" : 4,
+            "torch_passive_retention" : 120,
+            "torch_adj_h" : 35,
+            "torch_adj_v" : 40,
             "R" : 0, "G" : 0, "B" : 0
         }
     ];
@@ -213,12 +268,14 @@
             selector.value = data[idx].mode;
         }
 
-        /* brightness */
         {
             let container = document.getElementById("mode_container");
             let brightnessSlider = document.getElementById("brightness_slider");
             let fpsSlider = document.getElementById("fps_slider");
             let sparkThreshold = document.getElementById("torch_spark_threshold_slider");
+            let passiveRetention = document.getElementById("torch_passive_retention_slider");
+            let adjH = document.getElementById("torch_adj_h_slider");
+            let adjV = document.getElementById("torch_adj_v_slider");
 
             if(
                 "solid_rgb" === data[idx].mode
@@ -226,8 +283,17 @@
                 || "fx_torch" == data[idx].mode)
             {
                 brightnessSlider.valueAsNumber = data[idx].brightness;
+                document.getElementById("brightness_lookup").innerHTML = data[idx].brightness;
                 fpsSlider.valueAsNumber = data[idx].fps;
+                document.getElementById("fps_lookup").innerHTML = data[idx].fps;
                 sparkThreshold.valueAsNumber = data[idx].torch_spark_threshold;
+                document.getElementById("torch_spark_threshold_lookup").innerHTML = data[idx].torch_spark_threshold;
+                passiveRetention.valueAsNumber = data[idx].torch_passive_retention;
+                document.getElementById("torch_passive_retention_lookup").innerHTML = data[idx].torch_passive_retention;
+                adjH.valueAsNumber = data[idx].torch_adj_h;
+                document.getElementById("torch_adj_h_lookup").innerHTML = data[idx].torch_adj_h;
+                adjV.valueAsNumber = data[idx].torch_adj_v;
+                document.getElementById("torch_adj_v_lookup").innerHTML = data[idx].torch_adj_v;
                 container.style.display = "block";
             }
             else
@@ -242,6 +308,22 @@
 
 
             if("solid_rgb" === data[idx].mode)
+            {
+                container.style.display = "block";
+                updateCanvas(idx);
+                updateSliders(idx);
+            }
+            else
+            {
+                container.style.display = "none";
+            }
+        }
+
+        /* fx_torch */
+        {
+            let container = document.getElementById("torch_selector_container");
+
+            if("fx_torch" === data[idx].mode)
             {
                 container.style.display = "block";
                 updateCanvas(idx);
@@ -273,6 +355,9 @@
         else if("fx_torch" === data[idx].mode)
         {
             request.torch_spark_threshold = data[idx].torch_spark_threshold;
+            request.torch_passive_retention = data[idx].torch_passive_retention;
+            request.torch_adj_h = data[idx].torch_adj_h;
+            request.torch_adj_v = data[idx].torch_adj_v;
         }
 
         socket_io.emit("UpdateLamp", request);
@@ -286,6 +371,9 @@
         let brightnessSlider = document.getElementById("brightness_slider");
         let fpsSlider = document.getElementById("fps_slider");
         let sparkThreshold = document.getElementById("torch_spark_threshold_slider");
+        let passiveRetention = document.getElementById("torch_passive_retention_slider");
+        let adjH = document.getElementById("torch_adj_h_slider");
+        let adjV = document.getElementById("torch_adj_v_slider");
 
         rSlider.addEventListener(
             "change",
@@ -318,6 +406,7 @@
             function()
             {
                 data[dataIdx].brightness = this.valueAsNumber;
+                document.getElementById("brightness_lookup").innerHTML = data[dataIdx].brightness;
                 emitLampUpdate(dataIdx);
             });
         fpsSlider.addEventListener(
@@ -325,6 +414,7 @@
             function()
             {
                 data[dataIdx].fps = this.valueAsNumber;
+                document.getElementById("fps_lookup").innerHTML = data[dataIdx].fps;
                 emitLampUpdate(dataIdx);
             });
         sparkThreshold.addEventListener(
@@ -332,6 +422,31 @@
             function()
             {
                 data[dataIdx].torch_spark_threshold = this.valueAsNumber;
+                document.getElementById("torch_spark_threshold_lookup").innerHTML = data[dataIdx].torch_spark_threshold;
+                emitLampUpdate(dataIdx);
+            });
+        passiveRetention.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].torch_passive_retention = this.valueAsNumber;
+                document.getElementById("torch_passive_retention_lookup").innerHTML = data[dataIdx].torch_passive_retention;
+                emitLampUpdate(dataIdx);
+            });
+        adjH.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].torch_adj_h = this.valueAsNumber;
+                document.getElementById("torch_adj_h_lookup").innerHTML = data[dataIdx].torch_adj_h;
+                emitLampUpdate(dataIdx);
+            });
+        adjV.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].torch_adj_v = this.valueAsNumber;
+                document.getElementById("torch_adj_v_lookup").innerHTML = data[dataIdx].torch_adj_v;
                 emitLampUpdate(dataIdx);
             });
     }
