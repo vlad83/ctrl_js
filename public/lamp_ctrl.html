@@ -130,9 +130,18 @@
                             <p>B</p>
                         </div>
                         <div class = "TableCell">
-                            <p><input type="range" min="0" max="255" value="0" id="slider_r"></p>
-                            <p><input type="range" min="0" max="255" value="0" id="slider_g"></p>
-                            <p><input type="range" min="0" max="255" value="0" id="slider_b"></p>
+                            <p>
+                                <input type="range" min="0" max="255" value="0" id="slider_r">
+                                <span id="slider_r_lookup" style = "text-align: right"></span>
+                            </p>
+                            <p>
+                                <input type="range" min="0" max="255" value="0" id="slider_g">
+                                <span id="slider_g_lookup" style = "text-align: right"></span>
+                            </p>
+                            <p>
+                                <input type="range" min="0" max="255" value="0" id="slider_b">
+                                <span id="slider_b_lookup" style = "text-align: right"></span>
+                            </p>
                         </div>
                         <div class = "TableCell">
                             <canvas id="rgb_canvas" width=100% style="border:1px solid rgb(0,0,0)"></canvas>
@@ -159,7 +168,8 @@
             "torch_passive_retention" : 120,
             "torch_adj_h" : 35,
             "torch_adj_v" : 40,
-            "R" : 0, "G" : 0, "B" : 0
+            "solid_rgb" : [0, 0, 0],
+            "fx_torch" : [180, 20, 0],
         },
         {
             "name" : "B",
@@ -170,7 +180,8 @@
             "torch_passive_retention" : 120,
             "torch_adj_h" : 35,
             "torch_adj_v" : 40,
-            "R" : 0, "G" : 0, "B" : 0
+            "solid_rgb" : [0, 0, 0],
+            "fx_torch" : [180, 20, 0],
         },
         {
             "name" : "C",
@@ -181,7 +192,8 @@
             "torch_passive_retention" : 120,
             "torch_adj_h" : 35,
             "torch_adj_v" : 40,
-            "R" : 0, "G" : 0, "B" : 0
+            "solid_rgb" : [0, 0, 0],
+            "fx_torch" : [180, 20, 0],
         }
     ];
 
@@ -244,7 +256,8 @@
     function updateCanvas(idx)
     {
         let canvas = document.getElementById("rgb_canvas");
-        canvas.getContext("2d").fillStyle = "rgb(" + data[idx].R + ", " + data[idx].G + ", " + data[idx].B +")";
+        let rgb = data[idx][data[idx].mode];
+        canvas.getContext("2d").fillStyle = "rgb(" + rgb[0] + ", " + rgb[1] + ", " + rgb[2] +")";
         canvas.getContext("2d").fillRect(0, 0, canvas.width, canvas.height);
     }
 
@@ -254,9 +267,13 @@
         let gSlider = document.getElementById("slider_g");
         let bSlider = document.getElementById("slider_b");
 
-        rSlider.valueAsNumber = data[idx].R;
-        gSlider.valueAsNumber = data[idx].G;
-        bSlider.valueAsNumber = data[idx].B;
+        let rgb = data[idx][data[idx].mode];
+        rSlider.valueAsNumber = rgb[0];
+        document.getElementById("slider_r_lookup").innerHTML = rgb[0];
+        gSlider.valueAsNumber = rgb[1];
+        document.getElementById("slider_g_lookup").innerHTML = rgb[1];
+        bSlider.valueAsNumber = rgb[2];
+        document.getElementById("slider_b_lookup").innerHTML = rgb[2];
     }
 
     function updateModeSelector(idx)
@@ -307,7 +324,7 @@
             let container = document.getElementById("rgb_selector_container");
 
 
-            if("solid_rgb" === data[idx].mode)
+            if("solid_rgb" === data[idx].mode || "fx_torch" == data[idx].mode)
             {
                 container.style.display = "block";
                 updateCanvas(idx);
@@ -350,7 +367,7 @@
 
         if("solid_rgb" === data[idx].mode)
         {
-            request.RGB = [data[idx].R, data[idx].G, data[idx].B];
+            request.RGB = data[idx][data[idx].mode];
         }
         else if("fx_torch" === data[idx].mode)
         {
@@ -358,6 +375,7 @@
             request.torch_passive_retention = data[idx].torch_passive_retention;
             request.torch_adj_h = data[idx].torch_adj_h;
             request.torch_adj_v = data[idx].torch_adj_v;
+            request.torch_color_coeff = data[idx][data[idx].mode];
         }
 
         socket_io.emit("UpdateLamp", request);
@@ -379,7 +397,8 @@
             "change",
             function()
             {
-                data[dataIdx].R = this.valueAsNumber;
+                data[dataIdx][data[dataIdx].mode][0] = this.valueAsNumber;
+                document.getElementById("slider_r_lookup").innerHTML = data[dataIdx][data[dataIdx].mode][0];
                 updateCanvas(dataIdx);
                 emitLampUpdate(dataIdx);
             });
@@ -388,7 +407,8 @@
             "change",
             function()
             {
-                data[dataIdx].G = this.valueAsNumber;
+                data[dataIdx][data[dataIdx].mode][1] = this.valueAsNumber;
+                document.getElementById("slider_g_lookup").innerHTML = data[dataIdx][data[dataIdx].mode][1];
                 updateCanvas(dataIdx);
                 emitLampUpdate(dataIdx);
             });
@@ -397,7 +417,8 @@
             "change",
             function()
             {
-                data[dataIdx].B = this.valueAsNumber;
+                data[dataIdx][data[dataIdx].mode][2] = this.valueAsNumber;
+                document.getElementById("slider_b_lookup").innerHTML = data[dataIdx][data[dataIdx].mode][2];
                 updateCanvas(dataIdx);
                 emitLampUpdate(dataIdx);
             });
