@@ -71,6 +71,18 @@
                             <p id = "fps_lookup" style = "text-align: right"></p>
                         </div>
                 </div>
+
+                <div class = "TableRow">
+                    <div class = "TableCell">
+                        <select id="palette_selector">
+                            <option value=255 selected>palette disabled</option>
+                            <option value=0>heat</option>
+                            <option value=1>laval</option>
+                            <option value=2>forst</option>
+                        </select>
+                    </div>
+                </div>
+
             </div>
             <div class = "Table">
                 <div id="torch_selector_container" style = "display : none">
@@ -164,6 +176,7 @@
             "mode" : "",
             "brightness" : 255,
             "fps" : 60,
+            "palette_id" : 255,
             "torch_spark_threshold" : 4,
             "torch_passive_retention" : 120,
             "torch_adj_h" : 35,
@@ -176,6 +189,7 @@
             "mode" : "",
             "brightness" : 255,
             "fps" : 60,
+            "palette_id" : 255,
             "torch_spark_threshold" : 4,
             "torch_passive_retention" : 120,
             "torch_adj_h" : 35,
@@ -188,6 +202,7 @@
             "mode" : "",
             "brightness" : 255,
             "fps" : 60,
+            "palette_id" : 255,
             "torch_spark_threshold" : 4,
             "torch_passive_retention" : 120,
             "torch_adj_h" : 35,
@@ -362,7 +377,8 @@
                 "id" : data[idx].name,
                 "mode" : data[idx].mode,
                 "brightness" : data[idx].brightness,
-                "fps" : data[idx].fps
+                "fps" : data[idx].fps,
+                "palette_id" : data[idx].palette_id
             };
 
         if("solid_rgb" === data[idx].mode)
@@ -485,12 +501,25 @@
             };
     }
 
+    function registerPaletteSelectorOnChange()
+    {
+        let selector = document.getElementById("palette_selector");
+
+        selector.onchange =
+            function()
+            {
+                data[dataIdx].palette_id = Number(this.value);
+                emitLampUpdate(dataIdx);
+            };
+    }
+
     window.addEventListener(
         "load",
         function()
         {
             registerIconOnClick();
             registerModeSelectorOnChange();
+            registerPaletteSelectorOnChange();
             registerSlidersOnChange();
         });
 </script>
