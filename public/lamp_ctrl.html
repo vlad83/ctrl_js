@@ -97,6 +97,32 @@
                             <p id = "torch_spark_threshold_lookup" style = "text-align: right"></p>
                         </div>
                     </div>
+
+                    <div class = "TableRow">
+                        <div class = "TableCell">
+                            <p>SPARK RETENSION</p>
+                        </div>
+                        <div class = "TableCell">
+                            <p><input type="range" min="0" max="255" value="0" id="torch_spark_retention_slider"></p>
+                        </div>
+                        <div class = "TableCell">
+                            <p id = "torch_spark_retention_lookup" style = "text-align: right"></p>
+                        </div>
+                    </div>
+
+                    <div class = "TableRow">
+                        <div class = "TableCell">
+                            <p>SPARK TRANSFER</p>
+                        </div>
+                        <div class = "TableCell">
+                            <p><input type="range" min="0" max="255" value="0" id="torch_spark_transfer_slider"></p>
+                        </div>
+                        <div class = "TableCell">
+                            <p id = "torch_spark_transfer_lookup" style = "text-align: right"></p>
+                        </div>
+                    </div>
+
+
                     <div class = "TableRow">
                         <div class = "TableCell">
                             <p>PASSIVE RETENTION</p>
@@ -113,7 +139,7 @@
                             <p>H ADJ LEAKAGE</p>
                         </div>
                         <div class = "TableCell">
-                            <p><input type="range" min="0" max="100" value="0" id="torch_adj_h_slider"></p>
+                            <p><input type="range" min="0" max="70" value="0" id="torch_adj_h_slider"></p>
                         </div>
                         <div class = "TableCell">
                             <p id = "torch_adj_h_lookup" style = "text-align: right"></p>
@@ -124,7 +150,7 @@
                             <p>V ADJ LEAKAGE</p>
                         </div>
                         <div class = "TableCell">
-                            <p><input type="range" min="0" max="100" value="0" id="torch_adj_v_slider"></p>
+                            <p><input type="range" min="0" max="70" value="0" id="torch_adj_v_slider"></p>
                         </div>
                         <div class = "TableCell">
                             <p id = "torch_adj_v_lookup" style = "text-align: right"></p>
@@ -178,6 +204,8 @@
             "fps" : 60,
             "palette_id" : 255,
             "torch_spark_threshold" : 4,
+            "torch_spark_retention" : 200,
+            "torch_spark_transfer" : 40,
             "torch_passive_retention" : 120,
             "torch_adj_h" : 35,
             "torch_adj_v" : 40,
@@ -191,6 +219,8 @@
             "fps" : 60,
             "palette_id" : 255,
             "torch_spark_threshold" : 4,
+            "torch_spark_retention" : 200,
+            "torch_spark_transfer" : 40,
             "torch_passive_retention" : 120,
             "torch_adj_h" : 35,
             "torch_adj_v" : 40,
@@ -204,6 +234,8 @@
             "fps" : 60,
             "palette_id" : 255,
             "torch_spark_threshold" : 4,
+            "torch_spark_retention" : 200,
+            "torch_spark_transfer" : 40,
             "torch_passive_retention" : 120,
             "torch_adj_h" : 35,
             "torch_adj_v" : 40,
@@ -305,6 +337,8 @@
             let brightnessSlider = document.getElementById("brightness_slider");
             let fpsSlider = document.getElementById("fps_slider");
             let sparkThreshold = document.getElementById("torch_spark_threshold_slider");
+            let sparkRetntion = document.getElementById("torch_spark_retention_slider");
+            let sparkTransfer = document.getElementById("torch_spark_transfer_slider");
             let passiveRetention = document.getElementById("torch_passive_retention_slider");
             let adjH = document.getElementById("torch_adj_h_slider");
             let adjV = document.getElementById("torch_adj_v_slider");
@@ -320,6 +354,10 @@
                 document.getElementById("fps_lookup").innerHTML = data[idx].fps;
                 sparkThreshold.valueAsNumber = data[idx].torch_spark_threshold;
                 document.getElementById("torch_spark_threshold_lookup").innerHTML = data[idx].torch_spark_threshold;
+                sparkRetntion.valueAsNumber = data[idx].torch_spark_retention;
+                document.getElementById("torch_spark_retention_lookup").innerHTML = data[idx].torch_spark_retention;
+                sparkTransfer.valueAsNumber = data[idx].torch_spark_transfer;
+                document.getElementById("torch_spark_transfer_lookup").innerHTML = data[idx].torch_spark_transfer;
                 passiveRetention.valueAsNumber = data[idx].torch_passive_retention;
                 document.getElementById("torch_passive_retention_lookup").innerHTML = data[idx].torch_passive_retention;
                 adjH.valueAsNumber = data[idx].torch_adj_h;
@@ -389,6 +427,8 @@
         {
             request.torch_spark_threshold = data[idx].torch_spark_threshold;
             request.torch_passive_retention = data[idx].torch_passive_retention;
+            request.torch_spark_retention = data[idx].torch_spark_retention;
+            request.torch_spark_transfer = data[idx].torch_spark_transfer;
             request.torch_adj_h = data[idx].torch_adj_h;
             request.torch_adj_v = data[idx].torch_adj_v;
             request.torch_color_coeff = data[idx][data[idx].mode];
@@ -405,6 +445,8 @@
         let brightnessSlider = document.getElementById("brightness_slider");
         let fpsSlider = document.getElementById("fps_slider");
         let sparkThreshold = document.getElementById("torch_spark_threshold_slider");
+        let sparkRetntion = document.getElementById("torch_spark_retention_slider");
+        let sparkTransfer = document.getElementById("torch_spark_transfer_slider");
         let passiveRetention = document.getElementById("torch_passive_retention_slider");
         let adjH = document.getElementById("torch_adj_h_slider");
         let adjV = document.getElementById("torch_adj_v_slider");
@@ -460,6 +502,22 @@
             {
                 data[dataIdx].torch_spark_threshold = this.valueAsNumber;
                 document.getElementById("torch_spark_threshold_lookup").innerHTML = data[dataIdx].torch_spark_threshold;
+                emitLampUpdate(dataIdx);
+            });
+        sparkRetntion.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].torch_spark_retention = this.valueAsNumber;
+                document.getElementById("torch_spark_retention_lookup").innerHTML = data[dataIdx].torch_spark_retention;
+                emitLampUpdate(dataIdx);
+            });
+        sparkTransfer.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].torch_spark_transfer = this.valueAsNumber;
+                document.getElementById("torch_spark_transfer_lookup").innerHTML = data[dataIdx].torch_spark_transfer;
                 emitLampUpdate(dataIdx);
             });
         passiveRetention.addEventListener(

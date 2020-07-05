@@ -44,7 +44,9 @@ async function updateDevice(data)
                 JSON.stringify(data.payload)
             ]);
 
-        [signature, service, reply] = await zmq_socket.receive();
+        [signature, service, r, reply] = await zmq_socket.receive();
+
+        if("sucess" !== r.toString()) throw "worker failed";
 
         log(
             signature.toString(),
@@ -82,17 +84,15 @@ async function dispatchUpdateLamp(request)
                 JSON.stringify(payload)
             ]);
 
+        [signature, service, r, reply] = await zmq_socket.receive();
 
-        [signature, service, reply] = await zmq_socket.receive();
+        if("sucess" !== r.toString()) throw "worker failed";
 
-        if("service unsupported" !== reply.toString())
+        let jsonArray = JSON.parse(reply.toString());
+
+        for(let i = 0; i < jsonArray.length; ++i)
         {
-            let jsonArray = JSON.parse(reply.toString());
-
-            for(let i = 0; i < jsonArray.length; ++i)
-            {
-                await updateDevice(jsonArray[i]);
-            }
+            await updateDevice(jsonArray[i]);
         }
     }
     catch(err)
