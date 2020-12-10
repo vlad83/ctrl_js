@@ -9,207 +9,124 @@
     <div>
         <div class = "Table">
             <div class = "TableRow">
-
-                <div class = "TableCell">
-                    <div class ="Icon" id = "iconA">
-                        <img src = "icon/svg/bulb.svg">
-                        A
-                    </div>
-                </div>
-
-                <div class = "TableCell">
-                    <div class ="Icon" id = "iconB">
-                        <img src = "icon/svg/bulb.svg">
-                        B
-                    </div>
-                </div>
-
-                <div class = "TableCell">
-                    <div class ="Icon" id = "iconC">
-                        <img src = "icon/svg/bulb.svg">
-                        C
-                    </div>
-                </div>
-
-                <div class = "TableCell">
-                    <div class ="Icon" id = "iconD">
-                        <img src = "icon/svg/bulb.svg">
-                        D
-                    </div>
-                </div>
-
-                <div class = "TableCell">
-                    <div class ="Icon" id = "iconE">
-                        <img src = "icon/svg/bulb.svg">
-                        E
-                    </div>
-                </div>
-
-                <div class = "TableCell">
-                    <div class ="Icon" id = "iconF">
-                        <img src = "icon/svg/bulb.svg">
-                        F
-                    </div>
-                </div>
-
+                <div class = "TableCell"> <div class ="Icon" id = "iconA"> <img src = "icon/svg/bulb.svg"> A </div> </div>
+                <div class = "TableCell"> <div class ="Icon" id = "iconB"> <img src = "icon/svg/bulb.svg"> B </div> </div>
+                <div class = "TableCell"> <div class ="Icon" id = "iconC"> <img src = "icon/svg/bulb.svg"> C </div> </div>
+                <div class = "TableCell"> <div class ="Icon" id = "iconD"> <img src = "icon/svg/bulb.svg"> D </div> </div>
+                <div class = "TableCell"> <div class ="Icon" id = "iconE"> <img src = "icon/svg/bulb.svg"> E </div> </div>
+                <div class = "TableCell"> <div class ="Icon" id = "iconF"> <img src = "icon/svg/bulb.svg"> F </div> </div>
+                <div class = "TableCell"> <div class ="Icon" id = "iconG"> <img src = "icon/svg/bulb.svg"> G </div> </div>
             </div>
         </div>
     </div>
-
 
     <div id="mode_selector_container" style = "display : none">
 
         <select id="mode_selector">
             <option value="" selected disabled hidden>Choose mode</option>
             <option value="off">OFF</option>
-            <option value="solid_rgb">solid RGB</option>
+            <option value="solid_rgb">RGB</option>
             <option value="fx_fire">fire</option>
             <option value="fx_torch">torch</option>
+            <option value="fx_noise">noise</option>
         </select>
 
         <div id = "mode_container" style = "display : none">
 
             <div class = "Table">
                 <div class = "TableRow">
-                        <div class = "TableCell">
-                            <p>BRIGHTNESS</p>
-                        </div>
-                        <div class = "TableCell">
-                            <p><input type="range" min="0" max="255" value="0" id="brightness_slider"></p>
-                        </div>
-                        <div class = "TableCell">
-                            <p id = "brightness_lookup" style = "text-align: right"></p>
-                        </div>
+                        <div class = "TableCell"> <p>BRIGHTNESS</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="0" max="255" value="0" id="brightness_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "brightness_lookup" style = "text-align: right"></p> </div>
                 </div>
                 <div class = "TableRow">
-                    <div class = "TableCell">
-                        <p>REFRESH RATE</p>
-                        </div>
-                        <div class = "TableCell">
-                            <p><input type="range" min="4" max="240" value="0" id="fps_slider"></p>
-                        </div>
-                        <div class = "TableCell">
-                            <p id = "fps_lookup" style = "text-align: right"></p>
-                        </div>
+                    <div class = "TableCell"> <p>REFRESH RATE</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="4" max="60" value="0" id="fps_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "fps_lookup" style = "text-align: right"></p> </div>
                 </div>
-
                 <div class = "TableRow">
                     <div class = "TableCell">
                         <select id="palette_selector">
                             <option value=255 selected>palette disabled</option>
-                            <option value=0>heat</option>
-                            <option value=1>laval</option>
-                            <option value=2>forst</option>
+                            <option value=0>HEAT</option>
+                            <option value=1>LAVAL</option>
+                            <option value=2>BHW1_SUNSET2</option>
+                            <option value=3>BHW2_WHOOO</option>
+                            <option value=4>BHW2_47</option>
+                            <option value=5>BHW2_G5R</option>
+                            <option value=6>BHW3_07</option>
+                            <option value=7>BHW3_30</option>
+                            <option value=8>BHW4_028</option>
+                            <option value=9>BHW4_062</option>
                         </select>
                     </div>
                 </div>
-
             </div>
-            <div class = "Table">
-                <div id="torch_selector_container" style = "display : none">
-                    <div class = "TableRow">
-                        <div class = "TableCell">
-                            <p>SPARK THRESHOLD</p>
-                        </div>
-                        <div class = "TableCell">
-                            <p><input type="range" min="0" max="32" value="0" id="torch_spark_threshold_slider"></p>
-                        </div>
-                        <div class = "TableCell">
-                            <p id = "torch_spark_threshold_lookup" style = "text-align: right"></p>
-                        </div>
-                    </div>
 
+            <div id="torch_selector_container" style = "display : none">
+                <div class = "Table">
                     <div class = "TableRow">
-                        <div class = "TableCell">
-                            <p>SPARK RETENSION</p>
-                        </div>
-                        <div class = "TableCell">
-                            <p><input type="range" min="0" max="255" value="0" id="torch_spark_retention_slider"></p>
-                        </div>
-                        <div class = "TableCell">
-                            <p id = "torch_spark_retention_lookup" style = "text-align: right"></p>
-                        </div>
-                    </div>
-
-                    <div class = "TableRow">
-                        <div class = "TableCell">
-                            <p>SPARK TRANSFER</p>
-                        </div>
-                        <div class = "TableCell">
-                            <p><input type="range" min="0" max="255" value="0" id="torch_spark_transfer_slider"></p>
-                        </div>
-                        <div class = "TableCell">
-                            <p id = "torch_spark_transfer_lookup" style = "text-align: right"></p>
-                        </div>
-                    </div>
-
-
-                    <div class = "TableRow">
-                        <div class = "TableCell">
-                            <p>PASSIVE RETENTION</p>
-                        </div>
-                        <div class = "TableCell">
-                            <p><input type="range" min="0" max="180" value="0" id="torch_passive_retention_slider"></p>
-                        </div>
-                        <div class = "TableCell">
-                            <p id = "torch_passive_retention_lookup" style = "text-align: right"></p>
-                        </div>
+                        <div class = "TableCell"> <p>SPARK THRESHOLD</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="0" max="32" value="0" id="torch_spark_threshold_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "torch_spark_threshold_lookup" style = "text-align: right"></p> </div>
                     </div>
                     <div class = "TableRow">
-                        <div class = "TableCell">
-                            <p>H ADJ LEAKAGE</p>
-                        </div>
-                        <div class = "TableCell">
-                            <p><input type="range" min="0" max="70" value="0" id="torch_adj_h_slider"></p>
-                        </div>
-                        <div class = "TableCell">
-                            <p id = "torch_adj_h_lookup" style = "text-align: right"></p>
-                        </div>
+                        <div class = "TableCell"> <p>SPARK RETENSION</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="0" max="255" value="0" id="torch_spark_retention_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "torch_spark_retention_lookup" style = "text-align: right"></p> </div>
                     </div>
                     <div class = "TableRow">
-                        <div class = "TableCell">
-                            <p>V ADJ LEAKAGE</p>
-                        </div>
-                        <div class = "TableCell">
-                            <p><input type="range" min="0" max="70" value="0" id="torch_adj_v_slider"></p>
-                        </div>
-                        <div class = "TableCell">
-                            <p id = "torch_adj_v_lookup" style = "text-align: right"></p>
-                        </div>
+                        <div class = "TableCell"> <p>SPARK TRANSFER</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="0" max="255" value="0" id="torch_spark_transfer_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "torch_spark_transfer_lookup" style = "text-align: right"></p> </div>
+                    </div>
+                    <div class = "TableRow">
+                        <div class = "TableCell"> <p>PASSIVE RETENTION</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="0" max="180" value="0" id="torch_passive_retention_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "torch_passive_retention_lookup" style = "text-align: right"></p> </div>
+                    </div>
+                    <div class = "TableRow">
+                        <div class = "TableCell"> <p>H ADJ LEAKAGE</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="0" max="70" value="0" id="torch_adj_h_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "torch_adj_h_lookup" style = "text-align: right"></p> </div>
+                    </div>
+                    <div class = "TableRow">
+                        <div class = "TableCell"> <p>V ADJ LEAKAGE</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="0" max="70" value="0" id="torch_adj_v_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "torch_adj_v_lookup" style = "text-align: right"></p> </div>
                     </div>
                 </div>
+            </div>
+
+            <div id="noise_selector_container" style = "display : none">
+                <div class = "Table">
+                    <div class = "TableRow">
+                        <div class = "TableCell"> <p>STEP</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="1" max="100" value="0" id="noise_speed_step_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "noise_speed_step_lookup" style = "text-align: right"></p> </div>
+                    </div>
+                    <div class = "TableRow">
+                        <div class = "TableCell"> <p>SCALE</p> </div>
+                        <div class = "TableCell"> <p><input type="number" min="1" max="100" value="0" id="noise_scale_slider"></p> </div>
+                        <div class = "TableCell"> <p id = "noise_scale_lookup" style = "text-align: right"></p> </div>
+                    </div>
+               </div>
             </div>
 
             <div id = "rgb_selector_container" style = "display : none">
                 <div class = "Table">
                     <div class = "TableRow">
+                        <div class = "TableCell"> <p>R</p> <p>G</p> <p>B</p> </div>
                         <div class = "TableCell">
-                            <p>R</p>
-                            <p>G</p>
-                            <p>B</p>
+                            <p> <input type="number" min="0" max="255" value="0" id="slider_r"> <span id="slider_r_lookup" style = "text-align: right"></span> </p>
+                            <p> <input type="number" min="0" max="255" value="0" id="slider_g"> <span id="slider_g_lookup" style = "text-align: right"></span> </p>
+                            <p> <input type="number" min="0" max="255" value="0" id="slider_b"> <span id="slider_b_lookup" style = "text-align: right"></span> </p>
                         </div>
-                        <div class = "TableCell">
-                            <p>
-                                <input type="range" min="0" max="255" value="0" id="slider_r">
-                                <span id="slider_r_lookup" style = "text-align: right"></span>
-                            </p>
-                            <p>
-                                <input type="range" min="0" max="255" value="0" id="slider_g">
-                                <span id="slider_g_lookup" style = "text-align: right"></span>
-                            </p>
-                            <p>
-                                <input type="range" min="0" max="255" value="0" id="slider_b">
-                                <span id="slider_b_lookup" style = "text-align: right"></span>
-                            </p>
-                        </div>
-                        <div class = "TableCell">
-                            <canvas id="rgb_canvas" width=100% style="border:1px solid rgb(0,0,0)"></canvas>
-                        </div>
+                        <div class = "TableCell"> <canvas id="rgb_canvas" width=100% style="border:1px solid rgb(0,0,0)"></canvas> </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
 <script src="lib/socket.io.js"></script>
@@ -232,6 +149,8 @@
             "torch_adj_v" : 40,
             "solid_rgb" : [0, 0, 0],
             "fx_torch" : [180, 20, 0],
+            "noise_speed_step" : 20,
+            "noise_scale" : 30
         },
         {
             "name" : "B",
@@ -247,6 +166,8 @@
             "torch_adj_v" : 40,
             "solid_rgb" : [0, 0, 0],
             "fx_torch" : [180, 20, 0],
+            "noise_speed_step" : 20,
+            "noise_scale" : 30
         },
         {
             "name" : "C",
@@ -262,6 +183,8 @@
             "torch_adj_v" : 40,
             "solid_rgb" : [0, 0, 0],
             "fx_torch" : [180, 20, 0],
+            "noise_speed_step" : 20,
+            "noise_scale" : 30
         },
         {
             "name" : "D",
@@ -277,6 +200,8 @@
             "torch_adj_v" : 40,
             "solid_rgb" : [0, 0, 0],
             "fx_torch" : [180, 20, 0],
+            "noise_speed_step" : 20,
+            "noise_scale" : 30
         },
         {
             "name" : "E",
@@ -292,6 +217,8 @@
             "torch_adj_v" : 40,
             "solid_rgb" : [0, 0, 0],
             "fx_torch" : [180, 20, 0],
+            "noise_speed_step" : 20,
+            "noise_scale" : 30
         },
         {
             "name" : "F",
@@ -307,6 +234,25 @@
             "torch_adj_v" : 40,
             "solid_rgb" : [0, 0, 0],
             "fx_torch" : [180, 20, 0],
+            "noise_speed_step" : 20,
+            "noise_scale" : 30
+        },
+        {
+            "name" : "G",
+            "mode" : "",
+            "brightness" : 255,
+            "fps" : 60,
+            "palette_id" : 255,
+            "torch_spark_threshold" : 4,
+            "torch_spark_retention" : 200,
+            "torch_spark_transfer" : 40,
+            "torch_passive_retention" : 120,
+            "torch_adj_h" : 35,
+            "torch_adj_v" : 40,
+            "solid_rgb" : [0, 0, 0],
+            "fx_torch" : [180, 20, 0],
+            "noise_speed_step" : 20,
+            "noise_scale" : 30
         }
     ];
 
@@ -408,11 +354,14 @@
             let passiveRetention = document.getElementById("torch_passive_retention_slider");
             let adjH = document.getElementById("torch_adj_h_slider");
             let adjV = document.getElementById("torch_adj_v_slider");
+            let noiseSpeedStep = document.getElementById("noise_speed_step_slider");
+            let noiseScale = document.getElementById("noise_scale_slider");
 
             if(
                 "solid_rgb" === data[idx].mode
                 || "fx_fire" == data[idx].mode
-                || "fx_torch" == data[idx].mode)
+                || "fx_torch" == data[idx].mode
+                || "fx_noise" == data[idx].mode)
             {
                 brightnessSlider.valueAsNumber = data[idx].brightness;
                 document.getElementById("brightness_lookup").innerHTML = data[idx].brightness;
@@ -430,6 +379,10 @@
                 document.getElementById("torch_adj_h_lookup").innerHTML = data[idx].torch_adj_h;
                 adjV.valueAsNumber = data[idx].torch_adj_v;
                 document.getElementById("torch_adj_v_lookup").innerHTML = data[idx].torch_adj_v;
+                noiseSpeedStep.valueAsNumber = data[idx].noise_speed_step;
+                document.getElementById("noise_speed_step_lookup").innerHTML = data[idx].noise_speed_step;
+                noiseScale.valueAsNumber = data[idx].noise_scale;
+                document.getElementById("noise_scale_lookup").innerHTML = data[idx].noise_scale;
                 container.style.display = "block";
             }
             else
@@ -438,7 +391,7 @@
             }
         }
 
-        /* solid_rgb */
+        /* RGB selector */
         {
             let container = document.getElementById("rgb_selector_container");
 
@@ -449,26 +402,23 @@
                 updateCanvas(idx);
                 updateSliders(idx);
             }
-            else
-            {
-                container.style.display = "none";
-            }
+            else container.style.display = "none";
         }
 
-        /* fx_torch */
+        /* fx_torch parameters */
         {
             let container = document.getElementById("torch_selector_container");
 
-            if("fx_torch" === data[idx].mode)
-            {
-                container.style.display = "block";
-                updateCanvas(idx);
-                updateSliders(idx);
-            }
-            else
-            {
-                container.style.display = "none";
-            }
+            if("fx_torch" === data[idx].mode) container.style.display = "block";
+            else container.style.display = "none";
+        }
+
+        /* fx_noise parametes */
+        {
+            let container = document.getElementById("noise_selector_container");
+
+            if("fx_noise" === data[idx].mode) container.style.display = "block";
+            else container.style.display = "none";
         }
     }
 
@@ -499,6 +449,11 @@
             request.torch_adj_v = data[idx].torch_adj_v;
             request.torch_color_coeff = data[idx][data[idx].mode];
         }
+        else if("fx_noise" === data[idx].mode)
+        {
+            request.noise_speed_step = data[idx].noise_speed_step;
+            request.noise_scale = data[idx].noise_scale;
+        }
 
         socket_io.emit("UpdateLamp", request);
     }
@@ -516,6 +471,8 @@
         let passiveRetention = document.getElementById("torch_passive_retention_slider");
         let adjH = document.getElementById("torch_adj_h_slider");
         let adjV = document.getElementById("torch_adj_v_slider");
+        let noiseSpeedStep = document.getElementById("noise_speed_step_slider");
+        let noiseScale = document.getElementById("noise_scale_slider");
 
         rSlider.addEventListener(
             "change",
@@ -608,6 +565,22 @@
             {
                 data[dataIdx].torch_adj_v = this.valueAsNumber;
                 document.getElementById("torch_adj_v_lookup").innerHTML = data[dataIdx].torch_adj_v;
+                emitLampUpdate(dataIdx);
+            });
+        noiseSpeedStep.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].noise_speed_step = this.valueAsNumber;
+                document.getElementById("noise_speed_step_lookup").innerHTML = data[dataIdx].noise_speed_step;
+                emitLampUpdate(dataIdx);
+            });
+        noiseScale.addEventListener(
+            "change",
+            function()
+            {
+                data[dataIdx].noise_scale = this.valueAsNumber;
+                document.getElementById("noise_scale_lookup").innerHTML = data[dataIdx].noise_scale;
                 emitLampUpdate(dataIdx);
             });
     }
